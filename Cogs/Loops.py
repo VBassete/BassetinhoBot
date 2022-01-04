@@ -49,7 +49,7 @@ class Loop_water(commands.Cog):
         if self.index == 0:
             Tempo_dormindo = (60*60 - (dt.now().minute * 60)) + (60 - dt.now().second)
             print(f"Vou esperar por {Tempo_dormindo} segundos pra ligar os alertas de beber água zzzz")
-            #await asyncio.sleep(Tempo_dormindo)
+            await asyncio.sleep(Tempo_dormindo)
             self.index += 1
         
         canal = self.bot.get_channel(self.Channels_dict['Channel_agua'])
