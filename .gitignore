@@ -1,0 +1,4 @@
+.env
+*.pyc
+Cogs/__pythoncache__
+BassetinhoBot.py.bk 
