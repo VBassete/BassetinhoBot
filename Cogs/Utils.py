@@ -2,7 +2,6 @@ import discord
 from discord.ext import commands
 import json
 import os
-from dotenv import load_dotenv
 import random
 import requests
 import urllib
@@ -10,26 +9,15 @@ import numpy as np
 import asyncio
 import platform
 from gtts import gTTS as gt
+from Classes.Env import Enviorements
 
 class Utils(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
         self._last_member = None
-        with open("configs.json",'r') as file:
+        with open(f"Files{os.sep}configs.json",'r') as file:
             dict_ = json.load(file)
         self.Channels_dict = dict_['Channels_ID']
-        load_dotenv()
-        self.Discord_Token = os.getenv("DISCORD_TOKEN")
-        self.Discloud_Token = os.getenv("DISCLOUD_TOKEN")
-        self.Connection_String = os.getenv("CONNECTION_STRING")
-        self.Backup_mail = os.getenv("MAIL_ADDRESS")
-        self.Backup_password = os.getenv("MAIL_PASSWORD")
-        if platform.system() == "Windows":
-            self.FFpath = "/path/ffmpeg"
-        elif platform.system() == "Linux":
-            self.FFpath = "/usr/bin/ffmpeg"
-        else:
-            print("???")
 
     @commands.Cog.listener()
     async def on_message(self, ctx):
@@ -86,7 +74,7 @@ class Utils(commands.Cog):
                 string_sorteio = ""
                 for i in range(Dado_qtd):
                     string_sorteio = string_sorteio + str(np.random.randint(1,Dado_tipo+1)) + " "
-                await ctx.channel.send("Deu: " + string_sorteio)
+                await ctx.channel.send(f"Deu: {string_sorteio}")
                 print(f"Rodei um d{Dado_tipo} para {ctx.author}")
             else:
                 await ctx.channel.send("Escreve o comando direito")
@@ -105,7 +93,7 @@ class Utils(commands.Cog):
             VC = ctx.guild.voice_channels[int(arg1)]
         await VC.connect()
         voice_client: discord.VoiceClient = discord.utils.get(self.bot.voice_clients)
-        Rojao = discord.FFmpegPCMAudio(executable="ffmpeg", source="rojao.mp3")
+        Rojao = discord.FFmpegPCMAudio(executable="ffmpeg", source="Files{os.sep}rojao.mp3")
         if not voice_client.is_playing():
             voice_client.play(Rojao, after=None)
             await ctx.channel.send("fiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiu papum!!!")
@@ -130,10 +118,10 @@ class Utils(commands.Cog):
         if 0 < len(texto) <= 128:
             filename = str(args[0])+".mp3"
             audio_archive = gt(text=texto, lang=language)
-            audio_archive.save(filename)
+            audio_archive.save(f'Files{os.sep}{filename}')
             await VC.connect()
             voice_client: discord.VoiceClient = discord.utils.get(self.bot.voice_clients)
-            Audio_file = discord.FFmpegPCMAudio(executable="ffmpeg", source=filename)
+            Audio_file = discord.FFmpegPCMAudio(executable="ffmpeg", source=f'Files{os.sep}{filename}')
             
             if not voice_client.is_playing():
                 voice_client.play(Audio_file, after=None)

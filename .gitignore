@@ -1,11 +1,8 @@
 .env
 *.pyc
-Cogs/__pythoncache__
-BassetinhoBot.py.bk
+Cogs/__pycache__
+Classes/__pycache__
+*.bk
 .bassetinhobotenv
-ffmpeg.exe
-ffplay.exe
-ffprobe.exe
-
-BassetinhoBot.zip 
-BassetinhoBot_ico.jpg 
+*.exe
+*.zip 

@@ -7,19 +7,11 @@
 import discord
 import platform
 import os
-from dotenv import load_dotenv
 from discord.ext import commands
-
+from Classes.Env import Enviorements
 Versao = 1.5
 #----------------------------------------------------------------------------------------------
-#Carrega o Token
-load_dotenv()
-Discord_Token = os.getenv("DISCORD_TOKEN2")
-Connection_String = os.getenv("CONNECTION_STRING")
-Backup_mail = os.getenv("MAIL_ADDRESS")
-Backup_password = os.getenv("MAIL_PASSWORD")
-Wolfram_Token   = os.getenv("WOLFRAM_KEY")
-Pastebin_Token  = os.getenv("PASTEBIN_KEY")
+
 #----------------------------------------------------------------------------------------------
 
 #Pega o sistema operacional. E muda um endereço
@@ -29,10 +21,14 @@ print(f"Rodando python {platform.python_version()} em: {platform.system()}")
 
 bot    = commands.Bot(intents=discord.Intents.all(), command_prefix="*")
 
+@bot.event
+async def on_ready():
+    print('oi :)')
 if __name__ == '__main__':
     bot.load_extension("Cogs.Admin")
     bot.load_extension("Cogs.System")
     bot.load_extension("Cogs.Utils")
     bot.load_extension("Cogs.Dungeon")
-    bot.load_extension("Cogs.Loops")
-    bot.run(Discord_Token)
+    #não ative a Cog de loop no BasseTestinhoBot, vai atrapalhar o bot principal a funcionar    
+    #bot.load_extension("Cogs.Loops")
+    bot.run(Enviorements.Discord_Token2)

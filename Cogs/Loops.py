@@ -8,21 +8,16 @@ from datetime import datetime as dt
 from datetime import timedelta as td
 import asyncio
 from time import sleep
+from Classes.Env import Enviorements
 
 class Loop_water(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
         self._last_member = None
-        with open("configs.json",'r') as file:
+        with open(f"Files{os.sep}configs.json",'r') as file:
             self.dict_ = json.load(file)
         self.Channels_dict = self.dict_['Channels_ID']
         self.Water_info = self.dict_['Water_reminder_conf']
-        load_dotenv()
-        self.Discord_Token = os.getenv("DISCORD_TOKEN")
-        self.Discloud_Token = os.getenv("DISCLOUD_TOKEN")
-        self.Connection_String = os.getenv("CONNECTION_STRING")
-        self.Backup_mail = os.getenv("MAIL_ADDRESS")
-        self.Backup_password = os.getenv("MAIL_PASSWORD")
         self.index = 0
         self.water_reminder.start()
     
@@ -41,7 +36,7 @@ class Loop_water(commands.Cog):
                 await Distribuidor_da_agua.add_reaction("🥤")
                 self.Water_info["Reminder_message"] = Distribuidor_da_agua.id
                 self.dict_['Water_reminder_conf']["Reminder_message"] = Distribuidor_da_agua.id
-                with open('configs.json','w') as file:
+                with open(f'Files{os.sep}configs.json','w') as file:
                     json.dump(self.dict_,file)
                 return
         
@@ -58,7 +53,7 @@ class Loop_water(commands.Cog):
         await canal.send(f"Vamo beber {self.bot.guilds[0].get_role(self.Channels_dict['agua_ID']).mention} ai 😎")
         self.Water_info['Last_remind_id'] = canal.last_message_id
         self.dict_['Water_reminder_conf']['Last_remind_id'] = canal.last_message_id
-        with open('configs.json', 'w') as file:
+        with open(f'Files{os.sep}configs.json', 'w') as file:
             json.dump(self.dict_, file)
     
     @water_reminder.before_loop
@@ -69,11 +64,6 @@ class Loop_ChgAc(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
         self._last_member = None        
-        self.Discord_Token = os.getenv("DISCORD_TOKEN")
-        self.Discloud_Token = os.getenv("DISCLOUD_TOKEN")
-        self.Connection_String = os.getenv("CONNECTION_STRING")
-        self.Backup_mail = os.getenv("MAIL_ADDRESS")
-        self.Backup_password = os.getenv("MAIL_PASSWORD")
         self.change_activity.start()
        
     @tasks.loop(hours=1)

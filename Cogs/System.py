@@ -1,33 +1,26 @@
 import discord
 from discord.ext import commands, tasks
 import json
-import os
-from dotenv import load_dotenv
-import random
 from datetime import datetime as dt
 from datetime import timedelta as td
-import asyncio
+from Classes.Env import Enviorements
+import os
 
 class System(commands.Cog):
     def __init__(self,bot):
         self.bot = bot
         self._last_member = None
-        load_dotenv()
-        with open("configs.json",'r') as file:
+        with open(f"Files{os.sep}configs.json",'r') as file:
             self.dict_ = json.load(file)
         self.Channels_dict = self.dict_['Channels_ID']
-        self.Discord_Token = os.getenv("DISCORD_TOKEN")
-        self.Discloud_Token = os.getenv("DISCLOUD_TOKEN")
-        self.Connection_String = os.getenv("CONNECTION_STRING")
-        self.Backup_mail = os.getenv("MAIL_ADDRESS")
-        self.Backup_password = os.getenv("MAIL_PASSWORD")
+ 
 
     @commands.Cog.listener()
     async def on_ready(self):
         print("-"*40)
         print(f"Logado como {self.bot.user}")
         print("-"*40)
-        #await self.bot.guilds[0].get_channel(self.Channels_dict["Channel_logs"]).send(f"{self.bot.user} ativo em {dt.now().strftime('%d/%m/%Y %H:%M:%S')}")
+        await self.bot.guilds[0].get_channel(self.Channels_dict["Channel_logs"]).send(f"{self.bot.user} ativo em {dt.now().strftime('%d/%m/%Y %H:%M:%S')}")
        
     @commands.Cog.listener()
     async def on_member_join(self,member):
@@ -38,7 +31,7 @@ class System(commands.Cog):
             await member.add_roles(self.bot.guilds[0].get_role(self.Channels_dict['Proletariados_ID']))
     
     @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload): #added to System cog
+    async def on_raw_reaction_add(self, payload):
         if int(payload.channel_id) == self.Channels_dict["Channel_agua"]:
             canal = self.bot.get_channel(self.Channels_dict["Channel_agua"])
             msg = await canal.fetch_message(payload.message_id)
