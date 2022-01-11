@@ -93,7 +93,7 @@ class Utils(commands.Cog):
             VC = ctx.guild.voice_channels[int(arg1)]
         await VC.connect()
         voice_client: discord.VoiceClient = discord.utils.get(self.bot.voice_clients)
-        Rojao = discord.FFmpegPCMAudio(executable="ffmpeg", source="Files{os.sep}rojao.mp3")
+        Rojao = discord.FFmpegPCMAudio(executable="ffmpeg", source=f"Files{os.sep}rojao.mp3")
         if not voice_client.is_playing():
             voice_client.play(Rojao, after=None)
             await ctx.channel.send("fiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiu papum!!!")
