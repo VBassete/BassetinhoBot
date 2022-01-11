@@ -13,14 +13,7 @@ Costumo modificar a estrutura e os scripts do projeto com bastante frequência. 
 Obrigado a equipe do <a href="https://github.com/Bobotinho" target="_blank">Bobotinho</a> pela inspiração para alguns dos comandos do BassetinhoBot.
 
 Se você tiver algum(a) sugestão/problema sinta-se a vontade para mandar um email para <a href="mailto:vbassete@gmail.com" target="_blank">mim</a>.
-</div>
 
-<div>
-Nas [Cogs](Cogs/) os scripts estão separados por categorias em comum
-Nas [Classes](Classes/) estão algumas classes para simplificar o código 
-</div>
-
-<div>
 ## Proximas atualizações
 - Adicionar novas funcionalidades
 - Adicionar integrações com outros serviços
