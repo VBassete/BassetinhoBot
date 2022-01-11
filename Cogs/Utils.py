@@ -129,7 +129,7 @@ class Utils(commands.Cog):
                 while voice_client.is_playing():
                     await asyncio.sleep(1)
                 await voice_client.disconnect()
-            os.remove(filename)
+            os.remove(f'Files{os.sep}{filename}')
             return
         else:
             await ctx.channel.send("Cara diminui o texto ai pf")
