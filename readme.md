@@ -16,11 +16,6 @@ Se você tiver algum(a) sugestão/problema sinta-se a vontade para mandar um ema
 </div>
 
 <div>
-Nas [Cogs](Cogs/) os scripts estão separados por categorias em comum
-Nas [Classes](Classes/) estão algumas classes para simplificar o código 
-</div>
-
-<div>
 ## Proximas atualizações
 - Adicionar novas funcionalidades
 - Adicionar integrações com outros serviços
