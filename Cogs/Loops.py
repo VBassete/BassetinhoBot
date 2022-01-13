@@ -65,7 +65,6 @@ class Loop_water(commands.Cog):
             old_id = {'Last_remind_id':LastMessageID}
             new_id = {'$set':{'Last_remind_id':newmsg.id}}
             DBclient['WaterData']['Water_reminder'].update(old_id,new_id)
-        
         DBclient.close()
         
     @water_reminder.before_loop
