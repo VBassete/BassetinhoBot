@@ -23,12 +23,12 @@ bot    = commands.Bot(intents=discord.Intents.all(), command_prefix="*")
 
 @bot.event
 async def on_ready():
-    print('oi :)')
+    pass
 if __name__ == '__main__':
-    bot.load_extension("Cogs.Admin")
-    bot.load_extension("Cogs.System")
-    bot.load_extension("Cogs.Utils")
-    bot.load_extension("Cogs.Dungeon")
+    #bot.load_extension("Cogs.Admin")
+    #bot.load_extension("Cogs.System")
+    #bot.load_extension("Cogs.Utils")
+    #bot.load_extension("Cogs.Dungeon")
     #não ative a Cog de loop no BasseTestinhoBot, vai atrapalhar o bot principal a funcionar    
-    #bot.load_extension("Cogs.Loops")
+    bot.load_extension("Cogs.Loops")
     bot.run(Enviorements.Discord_Token2)

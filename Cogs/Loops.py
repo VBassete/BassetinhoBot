@@ -2,13 +2,12 @@ import discord
 from discord.ext import commands, tasks
 import json
 import os
-from dotenv import load_dotenv
 import random
 from datetime import datetime as dt
-from datetime import timedelta as td
 import asyncio
-from time import sleep
 from Classes.Env import Enviorements
+import pymongo
+import certifi
 
 class Loop_water(commands.Cog):
     def __init__(self,bot):
@@ -17,48 +16,62 @@ class Loop_water(commands.Cog):
         with open(f"Files{os.sep}configs.json",'r') as file:
             self.dict_ = json.load(file)
         self.Channels_dict = self.dict_['Channels_ID']
-        self.Water_info = self.dict_['Water_reminder_conf']
         self.index = 0
         self.water_reminder.start()
     
     @tasks.loop(hours=1)
     async def water_reminder(self):
-        async def message_check():
+        async def message_check(DBclient, ReactMessage):
             Canal_agua = self.bot.get_channel(self.Channels_dict['Channel_agua'])
             try:    
-                ID = self.Water_info['Reminder_message']
-                Distribuidor_da_agua = await Canal_agua.fetch_message(ID)
+                Distribuidor_da_agua = await Canal_agua.fetch_message(ReactMessage)
                 return
             except:
                 msg = "Lembrete de Beber água:\nSe você reagir aqui embaixo, vou ficar te mandando um lembrete pra beber água.\nFunciona melhor se você tiver o discord no celular.\nÉ isso, é nois"
                 await Canal_agua.send(msg)
                 Distribuidor_da_agua = Canal_agua.last_message
                 await Distribuidor_da_agua.add_reaction("🥤")
-                self.Water_info["Reminder_message"] = Distribuidor_da_agua.id
-                self.dict_['Water_reminder_conf']["Reminder_message"] = Distribuidor_da_agua.id
-                with open(f'Files{os.sep}configs.json','w') as file:
-                    json.dump(self.dict_,file)
+                old_id = {'React_Message_id': ReactMessage}
+                new_id = {"$set": {'React_Message_id':Distribuidor_da_agua.id}}
+                DBclient['WaterData']['Water_reminder'].update_one(old_id,new_id)
                 return
         
-        await message_check()
+        app_info = await self.bot.application_info()
+        try:
+            DBclient = pymongo.MongoClient(host=Enviorements.Connection_String,tlsCAFile=certifi.where())
+        except:
+            await self.bot.get_channel(self.Channels_dict['Channel_logs']).send(f"{app_info.owner.mention} não tô conseguindo acessar o BD")
+            return
+        DBdict = DBclient['WaterData']['Water_reminder'].find_one()
+        _, ReactMessage, LastMessageID = list(DBdict.values())
+        await message_check(DBclient,ReactMessage)
+        
         if self.index == 0:
-            Tempo_dormindo = (60*60 - (dt.now().minute * 60)) + (60 - dt.now().second)
+            Tempo_dormindo = (60*60 - ((dt.now().minute) * 60)) + (60 - dt.now().second)
             print(f"Vou esperar por {Tempo_dormindo} segundos pra ligar os alertas de beber água zzzz")
             await asyncio.sleep(Tempo_dormindo)
             self.index += 1
         
         canal = self.bot.get_channel(self.Channels_dict['Channel_agua'])
-        msg = await canal.fetch_message(int(self.Water_info['Last_remind_id']))
-        await msg.delete()
-        await canal.send(f"Vamo beber {self.bot.guilds[0].get_role(self.Channels_dict['agua_ID']).mention} ai 😎")
-        self.Water_info['Last_remind_id'] = canal.last_message_id
-        self.dict_['Water_reminder_conf']['Last_remind_id'] = canal.last_message_id
-        with open(f'Files{os.sep}configs.json', 'w') as file:
-            json.dump(self.dict_, file)
-    
+        try:
+            msg = await canal.fetch_message(LastMessageID)
+            await msg.delete()
+            newmsg:discord.Message = await canal.send(f"Vamo beber {self.bot.guilds[0].get_role(self.Channels_dict['agua_ID']).mention} ai 😎")
+            old_id = {'Last_remind_id':LastMessageID}
+            new_id = {'$set':{'Last_remind_id':newmsg.id}}
+            DBclient['WaterData']['Water_reminder'].update(old_id,new_id)
+        except:
+            newmsg:discord.Message = await canal.send(f"Vamo beber {self.bot.guilds[0].get_role(self.Channels_dict['agua_ID']).mention} ai 😎")
+            old_id = {'Last_remind_id':LastMessageID}
+            new_id = {'$set':{'Last_remind_id':newmsg.id}}
+            DBclient['WaterData']['Water_reminder'].update(old_id,new_id)
+        
+        DBclient.close()
+        
     @water_reminder.before_loop
     async def before_water_reminder(self):
         await self.bot.wait_until_ready()
+
 
 class Loop_ChgAc(commands.Cog):
     def __init__(self,bot):
