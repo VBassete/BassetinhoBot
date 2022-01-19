@@ -27,7 +27,7 @@ class System(commands.Cog):
         if not member.bot:
             canal = self.bot.guilds[0].get_channel(self.Channels_dict['Channel_conversar'])
             NBEmbed = discord.Embed(title=f"Olá, sou o BassetinhoBot 😁", description="Você entrou no Refugio dos Cornos!!!\nDigite !Comandos para ver o que eu consigo fazer :)")
-            await canal.send(msg= f"{member.mention}",embed=NBEmbed)
+            await canal.send(content= f"{member.mention}",embed=NBEmbed)
             await member.add_roles(self.bot.guilds[0].get_role(self.Channels_dict['Proletariados_ID']))
     
     @commands.Cog.listener()
